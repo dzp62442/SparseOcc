@@ -75,7 +75,7 @@ These results are from our latest version, v1.1, which outperforms the results r
 
 Install PyTorch 2.0 + CUDA 11.8:
 
-```
+```bash
 conda create -n sparseocc python=3.8
 conda activate sparseocc
 pip install torch==2.0.0 torchvision==0.15.0 --index-url https://download.pytorch.org/whl/cu118
@@ -83,7 +83,7 @@ pip install torch==2.0.0 torchvision==0.15.0 --index-url https://download.pytorc
 
 Install other dependencies:
 
-```
+```bash
 pip install openmim
 mim install mmcv-full==1.6.0
 mim install mmdet==2.28.2
@@ -96,7 +96,7 @@ pip install wandb
 
 Install turbojpeg and pillow-simd to speed up data loading (optional but important):
 
-```
+```bash
 sudo apt-get update
 sudo apt-get install -y libturbojpeg
 pip install pyturbojpeg
@@ -106,7 +106,7 @@ pip install pillow-simd==9.0.0.post1
 
 Compile CUDA extensions:
 
-```
+```bash
 cd models/csrc
 python setup.py build_ext --inplace
 ```
@@ -148,13 +148,13 @@ data/nuscenes
 
 Train SparseOcc with 8 GPUs:
 
-```
+```bash
 torchrun --nproc_per_node 8 train.py --config configs/r50_nuimg_704x256_8f.py
 ```
 
 Train SparseOcc with 4 GPUs (i.e the last four GPUs):
 
-```
+```bash
 export CUDA_VISIBLE_DEVICES=4,5,6,7
 torchrun --nproc_per_node 4 train.py --config configs/r50_nuimg_704x256_8f.py
 ```
@@ -165,14 +165,14 @@ The batch size for each GPU will be scaled automatically. So there is no need to
 
 Single-GPU evaluation:
 
-```
+```bash
 export CUDA_VISIBLE_DEVICES=0
 python val.py --config configs/r50_nuimg_704x256_8f.py --weights checkpoints/sparseocc_r50_nuimg_704x256_8f_24e_v1.1.pth
 ```
 
 Multi-GPU evaluation:
 
-```
+```bash
 export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
 torchrun --nproc_per_node 8 val.py --config configs/r50_nuimg_704x256_8f.py --weights checkpoints/sparseocc_r50_nuimg_704x256_8f_24e_v1.1.pth
 ```
@@ -183,7 +183,7 @@ If you want to evaluate your own model using RayIoU, please follow the steps bel
 
 1. Save the predictions (shape=`[200x200x16]`, dtype=`np.uint8`) with the compressed `npz` format. For example:
 
-```
+```python
 save_path = os.path.join(save_dir, sample_token + '.npz')
 np.savez_compressed(save_path, pred=sem_pred)
 ``` 
@@ -200,7 +200,7 @@ prediction/your_model
 
 3. Run `ray_metrics.py` to evaluate on the RayIoU:
 
-```
+```bash
 python ray_metrics.py --pred-dir prediction/your_model
 ```
 
@@ -208,7 +208,7 @@ python ray_metrics.py --pred-dir prediction/your_model
 
 FPS is measured with a single GPU:
 
-```
+```bash
 export CUDA_VISIBLE_DEVICES=0
 python timing.py --config configs/r50_nuimg_704x256_8f.py --weights checkpoints/sparseocc_r50_nuimg_704x256_8f_24e_v1.1.pth
 ```
