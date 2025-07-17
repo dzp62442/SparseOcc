@@ -78,7 +78,7 @@ Install PyTorch 2.0 + CUDA 11.8:
 ```
 conda create -n sparseocc python=3.8
 conda activate sparseocc
-conda install pytorch==2.0.0 torchvision==0.15.0 pytorch-cuda=11.8 -c pytorch -c nvidia
+pip install torch==2.0.0 torchvision==0.15.0 --index-url https://download.pytorch.org/whl/cu118
 ```
 
 Install other dependencies:
@@ -91,6 +91,7 @@ mim install mmsegmentation==0.30.0
 mim install mmdet3d==1.0.0rc6
 pip install setuptools==59.5.0
 pip install numpy==1.23.5
+pip install wandb
 ```
 
 Install turbojpeg and pillow-simd to speed up data loading (optional but important):
@@ -148,14 +149,14 @@ data/nuscenes
 Train SparseOcc with 8 GPUs:
 
 ```
-torchrun --nproc_per_node 8 train.py --config configs/sparseocc_r50_nuimg_704x256_8f.py
+torchrun --nproc_per_node 8 train.py --config configs/r50_nuimg_704x256_8f.py
 ```
 
 Train SparseOcc with 4 GPUs (i.e the last four GPUs):
 
 ```
 export CUDA_VISIBLE_DEVICES=4,5,6,7
-torchrun --nproc_per_node 4 train.py --config configs/sparseocc_r50_nuimg_704x256_8f.py
+torchrun --nproc_per_node 4 train.py --config configs/r50_nuimg_704x256_8f.py
 ```
 
 The batch size for each GPU will be scaled automatically. So there is no need to modify the `batch_size` in config files.
@@ -166,14 +167,14 @@ Single-GPU evaluation:
 
 ```
 export CUDA_VISIBLE_DEVICES=0
-python val.py --config configs/sparseocc_r50_nuimg_704x256_8f.py --weights checkpoints/sparseocc_r50_nuimg_704x256_8f.pth
+python val.py --config configs/r50_nuimg_704x256_8f.py --weights checkpoints/sparseocc_r50_nuimg_704x256_8f_24e_v1.1.pth
 ```
 
 Multi-GPU evaluation:
 
 ```
 export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
-torchrun --nproc_per_node 8 val.py --config configs/sparseocc_r50_nuimg_704x256_8f.py --weights checkpoints/sparseocc_r50_nuimg_704x256_8f.pth
+torchrun --nproc_per_node 8 val.py --config configs/r50_nuimg_704x256_8f.py --weights checkpoints/sparseocc_r50_nuimg_704x256_8f_24e_v1.1.pth
 ```
 
 ## Standalone Evaluation
@@ -209,7 +210,7 @@ FPS is measured with a single GPU:
 
 ```
 export CUDA_VISIBLE_DEVICES=0
-python timing.py --config configs/sparseocc_r50_nuimg_704x256_8f.py --weights checkpoints/sparseocc_r50_nuimg_704x256_8f.pth
+python timing.py --config configs/r50_nuimg_704x256_8f.py --weights checkpoints/sparseocc_r50_nuimg_704x256_8f_24e_v1.1.pth
 ```
 
 ## Acknowledgements
